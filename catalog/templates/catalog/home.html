@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+
+{% block title %}
+SportStore | Главная
+{% endblock %}
+
+{% block content %}
+
+<div class="text-center">
+    <h1 class="display-4 fw-bold">SportStore</h1>
+
+    <p class="lead text-muted">
+        Экипировка для лыжных гонок и биатлона
+    </p>
+
+    <hr class="my-4">
+
+    <p class="fs-5">
+        Добро пожаловать в наш магазин! Здесь вы найдете всё необходимое
+        для тренировок, соревнований и активного отдыха.
+    </p>
+
+    <a href="{% url 'contacts' %}" class="btn btn-dark btn-lg mt-3">
+        Связаться с нами
+    </a>
+</div>
+
+{% endblock %}
