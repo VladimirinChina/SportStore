@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+
+{% block title %}
+Добавление товара | SportStore
+{% endblock %}
+
+{% block content %}
+
+<h1 class="mb-4">Добавить товар</h1>
+
+<form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+
+    {{ form.as_p }}
+
+    <button type="submit" class="btn btn-dark">
+        Сохранить товар
+    </button>
+
+    <a href="{% url 'home' %}" class="btn btn-outline-secondary">
+        Отмена
+    </a>
+</form>
+
+{% endblock %}

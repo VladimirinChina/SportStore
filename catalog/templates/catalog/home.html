@@ -15,7 +15,7 @@ SportStore | Главная
 </div>
 
 <div class="row g-4">
-    {% for product in products %}
+    {% for product in page_obj %}
         <div class="col-md-6 col-lg-4">
             <div class="card h-100">
 
@@ -51,5 +51,46 @@ SportStore | Главная
         </div>
     {% endfor %}
 </div>
+
+{% if page_obj.has_other_pages %}
+<nav class="mt-4">
+    <ul class="pagination justify-content-center">
+
+        {% if page_obj.has_previous %}
+            <li class="page-item">
+                <a
+                    class="page-link"
+                    href="?page={{ page_obj.previous_page_number }}"
+                >
+                    Назад
+                </a>
+            </li>
+        {% endif %}
+
+        {% for page_number in page_obj.paginator.page_range %}
+            <li class="page-item {% if page_number == page_obj.number %}active{% endif %}">
+                <a
+                    class="page-link"
+                    href="?page={{ page_number }}"
+                >
+                    {{ page_number }}
+                </a>
+            </li>
+        {% endfor %}
+
+        {% if page_obj.has_next %}
+            <li class="page-item">
+                <a
+                    class="page-link"
+                    href="?page={{ page_obj.next_page_number }}"
+                >
+                    Вперёд
+                </a>
+            </li>
+        {% endif %}
+
+    </ul>
+</nav>
+{% endif %}
 
 {% endblock %}
