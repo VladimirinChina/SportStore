@@ -20,4 +20,4 @@ class Blog(models.Model):
         verbose_name_plural = "блоговые записи"
 
     def __str__(self) -> str:
-        return self.title
+        return str(self.title)

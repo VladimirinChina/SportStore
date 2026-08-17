@@ -1,7 +1,10 @@
-from django.urls import reverse
-from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
+from typing import cast
 
-from .models import Blog
+from django.db.models import QuerySet
+from django.urls import reverse
+from django.views.generic import CreateView, DeleteView, DetailView, ListView, UpdateView
+
+from blog.models import Blog
 
 
 class BlogListView(ListView):
@@ -11,7 +14,7 @@ class BlogListView(ListView):
     template_name = "blog/blog_list.html"
     context_object_name = "blogs"
 
-    def get_queryset(self):
+    def get_queryset(self) -> QuerySet[Blog]:
         """Возвращает только опубликованные блоговые записи."""
 
         return Blog.objects.filter(is_published=True)
@@ -24,10 +27,10 @@ class BlogDetailView(DetailView):
     template_name = "blog/blog_detail.html"
     context_object_name = "blog"
 
-    def get_object(self, queryset=None):
+    def get_object(self, queryset: QuerySet[Blog] | None = None,) -> Blog:
         """Возвращает запись и увеличивает счетчик просмотров."""
 
-        blog = super().get_object(queryset)
+        blog = cast(Blog, super().get_object(queryset))
         blog.views_count += 1
         blog.save()
 
@@ -49,9 +52,12 @@ class BlogCreateView(CreateView):
     def get_success_url(self) -> str:
         """Возвращает URL созданной записи."""
 
-        return reverse(
-            "blog_detail",
-            kwargs={"pk": self.object.pk},
+        return cast(
+            str,
+            reverse(
+                "blog_detail",
+                kwargs={"pk": self.object.pk},
+            ),
         )
 
 
@@ -70,9 +76,12 @@ class BlogUpdateView(UpdateView):
     def get_success_url(self) -> str:
         """Возвращает URL отредактированной записи."""
 
-        return reverse(
-            "blog_detail",
-            kwargs={"pk": self.object.pk},
+        return cast(
+            str,
+            reverse(
+                "blog_detail",
+                kwargs={"pk": self.object.pk},
+            ),
         )
 
 
@@ -85,4 +94,4 @@ class BlogDeleteView(DeleteView):
     def get_success_url(self) -> str:
         """Возвращает URL списка блоговых записей."""
 
-        return reverse("blog_list")
+        return cast(str, reverse("blog_list"))

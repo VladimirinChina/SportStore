@@ -1,5 +1,7 @@
+from typing import cast
+
 from django.urls import reverse
-from django.views.generic import ListView, TemplateView, DetailView, CreateView
+from django.views.generic import CreateView, DetailView, ListView, TemplateView
 
 from .forms import ProductForm
 from .models import Product
@@ -38,7 +40,10 @@ class ProductCreateView(CreateView):
     def get_success_url(self) -> str:
         """Возвращает URL созданного товара."""
 
-        return reverse(
-            "product_detail",
-            kwargs={"pk": self.object.pk},
+        return cast(
+            str,
+            reverse(
+                "product_detail",
+                kwargs={"pk": self.object.pk},
+            ),
         )
