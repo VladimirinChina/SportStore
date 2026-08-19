@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+
+{% block title %}
+Создание статьи
+{% endblock %}
+
+{% block content %}
+
+<h1>Создание статьи</h1>
+
+<form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+
+    {{ form.as_p }}
+
+    <button type="submit" class="btn btn-dark">
+        Сохранить
+    </button>
+
+    <a href="{% url 'blog_list' %}" class="btn btn-secondary">
+        Отмена
+    </a>
+</form>
+
+{% endblock %}

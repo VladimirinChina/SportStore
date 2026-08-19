@@ -10,7 +10,7 @@ class Category(models.Model):
         verbose_name_plural = "категории"
 
     def __str__(self) -> str:
-        return self.name
+        return str(self.name)
 
 
 class Product(models.Model):
@@ -31,4 +31,4 @@ class Product(models.Model):
         verbose_name_plural = "товары"
 
     def __str__(self) -> str:
-        return self.name
+        return str(self.name)

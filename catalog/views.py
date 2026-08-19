@@ -1,51 +1,49 @@
-from django.core.paginator import Paginator
-from django.http import HttpRequest, HttpResponse
-from django.shortcuts import redirect, render
+from typing import cast
+
+from django.urls import reverse
+from django.views.generic import CreateView, DetailView, ListView, TemplateView
 
 from .forms import ProductForm
 from .models import Product
 
 
-def home(request: HttpRequest) -> HttpResponse:
-    """Отображает главную страницу магазина."""
+class ProductListView(ListView):
+    """Отображает список товаров."""
 
-    products = Product.objects.all()
-    paginator = Paginator(products, 3)
-
-    page_number = request.GET.get("page")
-    page_obj = paginator.get_page(page_number)
-
-    return render(
-        request,
-        "catalog/home.html",
-        {"page_obj": page_obj},
-    )
+    model = Product
+    template_name = "catalog/home.html"
+    context_object_name = "products"
+    paginate_by = 3
 
 
-def contacts(request: HttpRequest) -> HttpResponse:
+class ContactsTemplateView(TemplateView):
     """Отображает страницу контактов."""
 
-    return render(request, "catalog/contacts.html")
+    template_name = "catalog/contacts.html"
 
 
-def product_detail(request: HttpRequest, pk: int) -> HttpResponse:
-    """Отображает страницу с подробной информацией о товаре."""
+class ProductDetailView(DetailView):
+    """Отображает подробную информацию о товаре."""
 
-    product = Product.objects.get(pk=pk)
+    model = Product
+    template_name = "catalog/product_detail.html"
+    context_object_name = "product"
 
-    return render(request, "catalog/product_detail.html", {"product": product})
 
-
-def product_create(request: HttpRequest) -> HttpResponse:
+class ProductCreateView(CreateView):
     """Создает новый товар."""
 
-    if request.method == "POST":
-        form = ProductForm(request.POST, request.FILES)
+    model = Product
+    form_class = ProductForm
+    template_name = "catalog/product_form.html"
 
-        if form.is_valid():
-            product = form.save()
-            return redirect("product_detail", pk=product.pk)
-    else:
-        form = ProductForm()
+    def get_success_url(self) -> str:
+        """Возвращает URL созданного товара."""
 
-    return render(request, "catalog/product_form.html", {"form": form})
+        return cast(
+            str,
+            reverse(
+                "product_detail",
+                kwargs={"pk": self.object.pk},
+            ),
+        )
