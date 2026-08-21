@@ -28,10 +28,26 @@
             Категория: {{ product.category.name }}
         </p>
 
+        <a
+            href="{% url 'product_update' pk=product.pk %}"
+            class="btn btn-outline-dark"
+        >
+            Редактировать
+        </a>
+
+        <a
+            href="{% url 'product_delete' pk=product.pk %}"
+            class="btn btn-danger"
+        >
+            Удалить
+        </a>
+
         <a href="{% url 'home' %}" class="btn btn-dark">
             ← Вернуться к товарам
         </a>
+
     </div>
+
 </div>
 
 {% endblock %}

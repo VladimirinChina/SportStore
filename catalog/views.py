@@ -1,7 +1,7 @@
 from typing import cast
 
 from django.urls import reverse
-from django.views.generic import CreateView, DetailView, ListView, TemplateView
+from django.views.generic import CreateView, DetailView, ListView, TemplateView, UpdateView, DeleteView
 
 from .forms import ProductForm
 from .models import Product
@@ -47,3 +47,35 @@ class ProductCreateView(CreateView):
                 kwargs={"pk": self.object.pk},
             ),
         )
+
+
+class ProductUpdateView(UpdateView):
+    """Редактирует товар."""
+
+    model = Product
+    form_class = ProductForm
+    template_name = "catalog/product_form.html"
+
+    def get_success_url(self) -> str:
+        """Возвращает URL отредактированного товара."""
+
+        return cast(
+            str,
+            reverse(
+                "product_detail",
+                kwargs={"pk": self.object.pk},
+            ),
+        )
+
+
+class ProductDeleteView(DeleteView):
+    """Удаляет товар."""
+
+    model = Product
+    template_name = "catalog/product_confirm_delete.html"
+    context_object_name = "product"
+
+    def get_success_url(self) -> str:
+        """Возвращает URL главной страницы."""
+
+        return cast(str, reverse("home"))
