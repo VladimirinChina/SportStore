@@ -27,7 +27,10 @@ class BlogDetailView(DetailView):
     template_name = "blog/blog_detail.html"
     context_object_name = "blog"
 
-    def get_object(self, queryset: QuerySet[Blog] | None = None,) -> Blog:
+    def get_object(
+        self,
+        queryset: QuerySet[Blog] | None = None,
+    ) -> Blog:
         """Возвращает запись и увеличивает счетчик просмотров."""
 
         blog = cast(Blog, super().get_object(queryset))
