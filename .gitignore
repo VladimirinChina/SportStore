@@ -221,3 +221,5 @@ __marimo__/
 # Temporary database migration/backup files
 sportstore_before_custom_user.dump
 users_0001.sql
+# User-uploaded media files
+media/

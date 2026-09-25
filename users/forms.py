@@ -32,3 +32,18 @@ class UserLoginForm(AuthenticationForm):
             }
         ),
     )
+
+
+class UserProfileForm(forms.ModelForm):
+    """Форма редактирования профиля пользователя."""
+
+    class Meta:
+        model = User
+        fields = (
+            "first_name",
+            "last_name",
+            "email",
+            "avatar",
+            "phone_number",
+            "country",
+        )
