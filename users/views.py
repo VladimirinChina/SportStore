@@ -1,12 +1,13 @@
 from django.contrib.auth import login
 from django.contrib.auth.decorators import login_required
 from django.core.mail import send_mail
+from django.http import HttpRequest, HttpResponse
 from django.shortcuts import redirect, render
 
 from .forms import UserLoginForm, UserProfileForm, UserRegistrationForm
 
 
-def register(request):
+def register(request: HttpRequest) -> HttpResponse:
     """Регистрирует нового пользователя."""
 
     if request.method == "POST":
@@ -35,7 +36,7 @@ def register(request):
     return render(request, "users/register.html", {"form": form})
 
 
-def user_login(request):
+def user_login(request: HttpRequest) -> HttpResponse:
     """Выполняет вход пользователя."""
 
     if request.method == "POST":
@@ -51,7 +52,7 @@ def user_login(request):
 
 
 @login_required
-def profile(request):
+def profile(request: HttpRequest) -> HttpResponse:
     """Редактирует профиль текущего пользователя."""
 
     if request.method == "POST":
