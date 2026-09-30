@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.db import models
 
 
@@ -22,6 +23,12 @@ class Product(models.Model):
         on_delete=models.CASCADE,
         related_name="products",
     )
+    owner = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name="products",
+    )
+    published = models.BooleanField(default=False)
     price = models.DecimalField(max_digits=10, decimal_places=2)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -29,6 +36,9 @@ class Product(models.Model):
     class Meta:
         verbose_name = "товар"
         verbose_name_plural = "товары"
+        permissions = [
+            ("can_unpublish_product", "Может отменять публикацию товара"),
+        ]
 
     def __str__(self) -> str:
         return str(self.name)

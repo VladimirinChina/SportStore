@@ -25,6 +25,11 @@ urlpatterns = [
         name="product_delete",
     ),
     path(
+        "products/<int:pk>/unpublish/",
+        views.ProductUnpublishView.as_view(),
+        name="product_unpublish",
+    ),
+    path(
         "products/<int:pk>/",
         views.ProductDetailView.as_view(),
         name="product_detail",
