@@ -5,6 +5,25 @@ from django.conf import settings
 from django.db import migrations, models
 
 
+def assign_product_owner(apps, schema_editor):
+    """Назначает существующим товарам первого суперпользователя."""
+
+    Product = apps.get_model("catalog", "Product")
+    User = apps.get_model(settings.AUTH_USER_MODEL)
+
+    products_without_owner = Product.objects.filter(owner__isnull=True)
+
+    if not products_without_owner.exists():
+        return
+
+    owner = User.objects.filter(is_superuser=True).order_by("id").first()
+
+    if owner is None:
+        raise RuntimeError("Для назначения владельца товара необходим суперпользователь.")
+
+    products_without_owner.update(owner=owner)
+
+
 class Migration(migrations.Migration):
 
     dependencies = [
@@ -13,11 +32,17 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
+        migrations.RunPython(
+            assign_product_owner,
+            migrations.RunPython.noop,
+        ),
         migrations.AlterField(
             model_name="product",
             name="owner",
             field=models.ForeignKey(
-                on_delete=django.db.models.deletion.CASCADE, related_name="products", to=settings.AUTH_USER_MODEL
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name="products",
+                to=settings.AUTH_USER_MODEL,
             ),
         ),
     ]

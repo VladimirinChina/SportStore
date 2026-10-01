@@ -7,6 +7,8 @@
         "description": "Ремень для переноски винтовки во время тренировок и соревнований",
         "image": "",
         "category": 1,
+        "owner": 1,
+        "published": false,
         "price": "4500.00",
         "created_at": "2026-08-10T12:51:38.490Z",
         "updated_at": "2026-08-10T12:51:38.490Z"
@@ -20,6 +22,8 @@
         "description": "Гоночный костюм для тренировок и соревнований по биатлону",
         "image": "",
         "category": 1,
+        "owner": 1,
+        "published": false,
         "price": "12000.00",
         "created_at": "2026-08-10T12:51:49.638Z",
         "updated_at": "2026-08-10T12:51:49.638Z"
@@ -33,6 +37,8 @@
         "description": "Гоночные лыжи для тренировок и соревнований",
         "image": "",
         "category": 2,
+        "owner": 1,
+        "published": false,
         "price": "25000.00",
         "created_at": "2026-08-10T12:52:04.249Z",
         "updated_at": "2026-08-10T12:52:04.249Z"
@@ -46,6 +52,8 @@
         "description": "Гоночные лыжные палки",
         "image": "",
         "category": 2,
+        "owner": 1,
+        "published": false,
         "price": "8500.00",
         "created_at": "2026-08-10T12:52:17.230Z",
         "updated_at": "2026-08-10T12:52:17.230Z"
@@ -59,6 +67,8 @@
         "description": "Лыжероллеры для летней подготовки лыжников",
         "image": "",
         "category": 3,
+        "owner": 1,
+        "published": false,
         "price": "19500.00",
         "created_at": "2026-08-10T12:52:28.645Z",
         "updated_at": "2026-08-10T13:00:28.379Z"
