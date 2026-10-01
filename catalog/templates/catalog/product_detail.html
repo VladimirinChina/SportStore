@@ -15,38 +15,55 @@
         {% endif %}
     </div>
 
-    <div class="col-md-6">
-        <h1>{{ product.name }}</h1>
+<div class="col-md-6">
+    <h1>{{ product.name }}</h1>
 
-        <p class="lead">
-            {{ product.description }}
-        </p>
+    <p class="lead">
+        {{ product.description }}
+    </p>
 
-        <h3>{{ product.price }} ₽</h3>
+    <h3>{{ product.price }} ₽</h3>
 
-        <p class="text-muted">
-            Категория: {{ product.category.name }}
-        </p>
+    <p class="text-muted">
+        Категория: {{ product.category.name }}
+    </p>
 
+    {% if user == product.owner or perms.catalog.can_unpublish_product %}
         <a
             href="{% url 'product_update' pk=product.pk %}"
             class="btn btn-outline-dark"
         >
             Редактировать
         </a>
+    {% endif %}
 
+    {% if user == product.owner or perms.catalog.delete_product %}
         <a
             href="{% url 'product_delete' pk=product.pk %}"
             class="btn btn-danger"
         >
             Удалить
         </a>
+    {% endif %}
 
-        <a href="{% url 'home' %}" class="btn btn-dark">
-            ← Вернуться к товарам
-        </a>
+    {% if perms.catalog.can_unpublish_product and product.published %}
+        <form
+            method="post"
+            action="{% url 'product_unpublish' pk=product.pk %}"
+            class="d-inline"
+        >
+            {% csrf_token %}
+            <button type="submit" class="btn btn-warning">
+                Снять с публикации
+            </button>
+        </form>
+    {% endif %}
 
-    </div>
+    <a href="{% url 'home' %}" class="btn btn-dark">
+        ← Вернуться к товарам
+    </a>
+
+</div>
 
 </div>
 
