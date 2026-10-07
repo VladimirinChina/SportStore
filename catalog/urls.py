@@ -10,6 +10,11 @@ urlpatterns = [
         name="contacts",
     ),
     path(
+        "categories/<int:category_id>/products/",
+        views.CategoryProductListView.as_view(),
+        name="category_products",
+    ),
+    path(
         "products/create/",
         views.ProductCreateView.as_view(),
         name="product_create",
