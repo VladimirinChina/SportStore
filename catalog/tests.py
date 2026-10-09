@@ -1,9 +1,13 @@
+from unittest.mock import patch
+
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Group, Permission
+from django.core.cache import cache
 from django.test import TestCase
 from django.urls import reverse
 
 from .models import Category, Product
+from .services import get_products_by_category
 
 User = get_user_model()
 
@@ -256,3 +260,72 @@ class ProductUnpublishTest(TestCase):
 
         self.product.refresh_from_db()
         self.assertFalse(self.product.published)
+
+
+class ProductCategoryCacheTest(TestCase):
+    """Тестирует низкоуровневое кеширование товаров категории."""
+
+    def setUp(self) -> None:
+        """Создает категорию и товары для тестирования."""
+
+        cache.clear()
+
+        self.user = User.objects.create_user(
+            email="cache-owner@example.com",
+            password="test-password",
+        )
+
+        self.category = Category.objects.create(
+            name="Категория для кеша",
+            description="Описание категории для тестирования.",
+        )
+
+        self.product = Product.objects.create(
+            name="Товар для кеша",
+            description="Описание товара для тестирования.",
+            category=self.category,
+            owner=self.user,
+            price="150.00",
+        )
+
+    def tearDown(self) -> None:
+        """Очищает кеш после теста."""
+
+        cache.clear()
+
+    def test_first_call_queries_database_and_caches_products(self) -> None:
+        """Первый вызов получает товары из БД и сохраняет их в кеш."""
+
+        with self.assertNumQueries(1):
+            products = get_products_by_category(self.category.pk)
+
+        self.assertEqual(products, [self.product])
+        self.assertIsInstance(products, list)
+        self.assertEqual(
+            cache.get(f"category_{self.category.pk}"),
+            [self.product],
+        )
+
+    def test_second_call_returns_cached_products(self) -> None:
+        """Повторный вызов возвращает товары из кеша без запроса к БД."""
+
+        cached_products = [self.product]
+        cache.set(f"category_{self.category.pk}", cached_products, 300)
+
+        with patch("catalog.services.Product.objects.filter") as mock_filter:
+            products = get_products_by_category(self.category.pk)
+
+        self.assertEqual(products, cached_products)
+        mock_filter.assert_not_called()
+
+    def test_cache_timeout_is_300_seconds(self) -> None:
+        """Проверяет, что сервис сохраняет кеш на 300 секунд."""
+
+        with patch("catalog.services.cache.set") as mock_cache_set:
+            get_products_by_category(self.category.pk)
+
+        mock_cache_set.assert_called_once()
+        args, kwargs = mock_cache_set.call_args
+
+        self.assertEqual(args[0], f"category_{self.category.pk}")
+        self.assertEqual(args[2], 300)

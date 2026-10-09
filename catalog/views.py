@@ -1,7 +1,6 @@
 from typing import Any, cast
 
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
-from django.db.models import QuerySet
 from django.http import HttpRequest, HttpResponse
 from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse
@@ -32,7 +31,7 @@ class CategoryProductListView(LoginRequiredMixin, ListView):
     template_name = "catalog/category_products.html"
     context_object_name = "products"
 
-    def get_queryset(self) -> QuerySet[Product]:
+    def get_queryset(self) -> list[Product]:
         """Возвращает продукты указанной категории."""
 
         category_id = self.kwargs["category_id"]
