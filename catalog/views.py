@@ -4,11 +4,14 @@ from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.http import HttpRequest, HttpResponse
 from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse
+from django.utils.decorators import method_decorator
 from django.views import View
+from django.views.decorators.cache import cache_page
 from django.views.generic import CreateView, DeleteView, DetailView, ListView, TemplateView, UpdateView
 
 from .forms import ProductForm
-from .models import Product
+from .models import Category, Product
+from .services import get_products_by_category
 
 
 class ProductListView(ListView):
@@ -21,12 +24,38 @@ class ProductListView(ListView):
     ordering = ("id",)
 
 
+class CategoryProductListView(LoginRequiredMixin, ListView):
+    """Отображает список продуктов указанной категории."""
+
+    model = Product
+    template_name = "catalog/category_products.html"
+    context_object_name = "products"
+
+    def get_queryset(self) -> list[Product]:
+        """Возвращает продукты указанной категории."""
+
+        category_id = self.kwargs["category_id"]
+
+        return get_products_by_category(category_id)
+
+    def get_context_data(self, **kwargs: object) -> dict[str, object]:
+        """Добавляет категорию в контекст шаблона."""
+
+        context = super().get_context_data(**kwargs)
+        category_id = self.kwargs["category_id"]
+
+        context["category"] = Category.objects.get(pk=category_id)
+
+        return context
+
+
 class ContactsTemplateView(TemplateView):
     """Отображает страницу контактов."""
 
     template_name = "catalog/contacts.html"
 
 
+@method_decorator(cache_page(300), name="dispatch")
 class ProductDetailView(LoginRequiredMixin, DetailView):
     """Отображает подробную информацию о товаре."""
 
